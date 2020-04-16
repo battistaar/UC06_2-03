@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Books</title>
+        <%- include('bootstrap') %>
+        <link rel="stylesheet" href="/style.css"/>
+    </head>
+    <body>
+        <%- include('navbar') %>
+        <div class="container">
+            <div class="row">
+                <% if(book.imageLinks && book.imageLinks.thumbnail) { %>
+                    <div class="col-3">
+                        <img src="<%= book.imageLinks.thumbnail %>" class="thumbnail">
+                    </div>
+                <% } %>
+                <div class="col-9">
+                    <h1><%= book.title %></h1>
+                    <h3>
+                        <% book.authors.forEach(function (author) { %>
+                            <a href="/authors/<%= author %>"><%= author %></a>&nbsp;
+                        <% }) %>
+                    </h3>
+                    <p><%- book.description %></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
