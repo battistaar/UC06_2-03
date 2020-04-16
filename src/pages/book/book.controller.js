@@ -8,8 +8,7 @@ module.exports.getBook = (req, res, next) => {
     const id = req.params.id;
     const book = allBooks.find(b => b.id === id);
     if (!book) {
-        res.status(404);
-        res.send('Not found');
+        next(new Error('Not Found'));
         return;
     }
 

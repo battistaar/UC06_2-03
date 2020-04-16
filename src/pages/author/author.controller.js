@@ -8,7 +8,7 @@ module.exports.authorPage = (req, res, next) => {
     const books = allBooks.filter(b => b.authors.includes(author));
     if (!books.length) {
         res.status(404);
-        res.send('Not found');
+        next(new Error('Not Found'))
         return;
     }
     res.render(path.join(templateFolder, 'main.ejs'), { books: books });
