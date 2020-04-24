@@ -27,7 +27,6 @@ module.exports.addPage = (req, res) => {
 
 module.exports.addBook = (req, res, next) => {
     const newBook = {
-        id: '' + allBooks.length,
         title: req.body.title,
         authors: [req.body.author],
         description: req.body.description,
