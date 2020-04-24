@@ -19,6 +19,7 @@ module.exports.get = (id) => {
 }
 
 module.exports.add = (bookData) => {
+    bookData.id = allBooks.length;
     allBooks.push(bookData);
     return writeFile(dataFile, JSON.stringify(allBooks))
         .then(_ => bookData);
