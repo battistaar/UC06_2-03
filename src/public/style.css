@@ -5,3 +5,7 @@
 .thumbnail {
     width: 100%;
 }
+
+.not-found {
+    text-align: center;
+}

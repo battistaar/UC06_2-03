@@ -1,15 +1,16 @@
 const path = require('path');
-const dataFile = path.join(process.cwd(), 'data/books.json');
 const templateFolder = path.join(process.cwd(), 'src/templates');
-let allBooks = require(dataFile);
+const bookModel = require('../book/book.model');
 
 module.exports.authorPage = (req, res, next) => {
     const author = req.params.name;
-    const books = allBooks.filter(b => b.authors.includes(author));
-    if (!books.length) {
-        res.status(404);
-        res.send('Not found');
-        return;
-    }
-    res.render(path.join(templateFolder, 'main.ejs'), { books: books });
+    
+    bookModel.findByAuthor(author)
+        .then(books => {
+            res.render(path.join(templateFolder, 'main.ejs'), { books: books });
+        })
+        .catch(_ => {
+            res.status(404);
+            res.send('Not found');
+        })
 };

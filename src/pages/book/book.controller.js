@@ -1,23 +1,24 @@
-const fs = require('fs');
 const path = require('path');
-const dataFile = path.join(process.cwd(), 'data/books.json');
 const templateFolder = path.join(process.cwd(), 'src/templates');
-let allBooks = require(dataFile);
+const bookModel = require('./book.model');
 
 module.exports.getBook = (req, res, next) => {
     const id = req.params.id;
-    const book = allBooks.find(b => b.id === id);
-    if (!book) {
-        res.status(404);
-        res.send('Not found');
-        return;
-    }
-
-    res.render(path.join(templateFolder, 'detail.ejs'), { book: book });
+    bookModel.get(id)
+        .then(book => {
+            res.render(path.join(templateFolder, 'detail.ejs'), { book: book });
+        })
+        .catch(_ => {
+            res.status(404);
+            res.send('Not found');
+        });
 }
 
 module.exports.listBooks = (req, res) => {
-    res.render(path.join(templateFolder, 'main.ejs'), { books: allBooks });
+    bookModel.list()
+        .then(books => {
+            res.render(path.join(templateFolder, 'main.ejs'), { books: books });
+        });
 }
 
 module.exports.addPage = (req, res) => {
@@ -34,12 +35,9 @@ module.exports.addBook = (req, res, next) => {
             thumbnail: req.body.thumbnail
         }
     }
-    allBooks.push(newBook);
-    fs.writeFile(dataFile, JSON.stringify(allBooks), (err) => {
-        if (err) {
-            next(err);
-            return;
-        }
-        res.redirect('/books');
-    });
+    bookModel.add(newBook)
+        .then(_ => {
+            res.redirect('/books');
+        })
+        .catch(next);
 }
