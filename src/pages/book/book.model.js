@@ -5,26 +5,23 @@ const dataFile = path.join(process.cwd(), 'data/books.json');
 const writeFile = util.promisify(fs.writeFile);
 
 let allBooks = require(dataFile);
+const Book = require('./book.schema');
 
 module.exports.list = () => {
-    return Promise.resolve(allBooks);
+    return Book.find();
 }
 
 module.exports.get = (id) => {
-    const book = allBooks.find(b => b.id === id);
-    if (!book) {
-        return Promise.reject(new Error('Missing Document'));
-    }
-    return Promise.resolve(book);
+    return Book.findById(id);
 }
 
 module.exports.add = (bookData) => {
-    allBooks.push(bookData);
-    return writeFile(dataFile, JSON.stringify(allBooks))
-        .then(_ => bookData);
+    return Book.create(bookData);
 }
 
 module.exports.findByAuthor = (author) => {
-    const books = allBooks.filter(b => b.authors.includes(author));
-    return !books.length ? Promise.reject(new Error('Missing Document')) : Promise.resolve(books);
+    return Book.find({authors: author})
+        .then(books => {
+            return !books.length ? new Error('Missing Document') : books;
+        });
 }
